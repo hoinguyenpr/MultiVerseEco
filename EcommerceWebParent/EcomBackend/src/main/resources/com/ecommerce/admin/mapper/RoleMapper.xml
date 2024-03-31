@@ -1,0 +1,37 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ecommerce.admin.mapper.RoleMapper">
+
+    <resultMap type="com.common.entity.Role" id="result">
+        <result property="id" column="id" />
+        <result property="name" column="name" />
+        <result property="description" column="description" />
+    </resultMap>
+
+    <select id="findAll" resultType="com.common.entity.Role" resultMap="result">
+        SELECT * FROM role
+    </select>
+
+    <select id="findById" parameterType="int"
+            resultType="com.common.entity.Role" resultMap="result">
+        SELECT * FROM role WHERE id = #{id}
+    </select>
+
+    <delete id="deleteById" parameterType="int">
+        DELETE FROM role WHERE id = #{id}
+    </delete>
+
+    <insert id="insert" parameterType="com.common.entity.Role"
+            keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO role(name, description)
+        VALUES(#{name}, #{description})
+    </insert>
+
+    <update id="update" parameterType="com.common.entity.Role">
+        UPDATE role SET name = #{name}, description = #{description}
+        WHERE id = #{id}
+    </update>
+
+</mapper>
