@@ -19,7 +19,6 @@
     <modules>
         <module>Common</module>
         <module>EcommerceWebParent</module>
-        <module>EcommerceWebParent/EcomFrontend</module>
     </modules>
 
 </project>

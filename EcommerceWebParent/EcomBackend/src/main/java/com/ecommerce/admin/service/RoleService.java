@@ -1,16 +1,18 @@
 package com.ecommerce.admin.service;
 
 import com.common.entity.Role;
-import com.ecommerce.admin.mapper.RoleMapper;
+import com.ecommerce.admin.user.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class RoleService {
     @Autowired
-    private RoleMapper mapper;
+    private RoleRepository repository;
 
-    public Role getRole(int id) {
-        return mapper.findById(id).get();
+    public List<Role> listAll() {
+        return (List<Role>) repository.findAll();
     }
 }
