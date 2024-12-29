@@ -31,18 +31,7 @@ public class UserRepositoryTest {
     @Test
     public void testCreateUser() {
         // Generate random user data
-        String firstName = TestUtils.generateText(5);
-        String lastName = TestUtils.generateText(5);
-        String email = TestUtils.generateText(5) + "@gmail.com";
-        String password = TestUtils.generateText(10);
-
-        // Create a new user with the generated data
-        User newUser = User.builder()
-                .firstName(firstName)
-                .lastName(lastName)
-                .email(email)
-                .password(password)
-                .build();
+        User newUser = TestUtils.mockUser();
 
         // Save the new user to the repository
         User createdUser = userRepo.save(newUser);
@@ -50,7 +39,7 @@ public class UserRepositoryTest {
         // Verify the user is correctly stored in the repository
         Assertions.assertThat(createdUser)
                 .extracting(User::getFirstName, User::getLastName, User::getEmail, User::getPassword)
-                .containsExactly(firstName, lastName, email, password);
+                .containsExactly(newUser.getFirstName(), newUser.getLastName(), newUser.getEmail(), newUser.getPassword());
     }
 
 
@@ -72,11 +61,7 @@ public class UserRepositoryTest {
         Role createdSecondRole = roleRepo.save(secondRole);
 
         // Create a user with the two roles
-        String firstName = TestUtils.generateText(5);
-        String lastName = TestUtils.generateText(5);
-        String email = TestUtils.generateText(5) + "@gmail.com";
-        String password = TestUtils.generateText(10);
-        User newUser = new User(firstName, lastName, email, password);
+        User newUser = TestUtils.mockUser();
         newUser.addRole(createdFirstRole);
         newUser.addRole(createdSecondRole);
         User createdUser = userRepo.save(newUser);
@@ -90,10 +75,36 @@ public class UserRepositoryTest {
                         User::getPassword,
                         User::getRoles)
                 .containsExactly(
-                        firstName,
-                        lastName,
-                        email,
-                        password,
+                        newUser.getFirstName(),
+                        newUser.getLastName(),
+                        newUser.getEmail(),
+                        newUser.getPassword(),
                         new HashSet<>(Arrays.asList(createdFirstRole, createdSecondRole)));
+    }
+
+    @Test
+    public void testFindAnExistingEmail() {
+        // Create a new user
+        User newUser = TestUtils.mockUser();
+
+        // Save the new user to the repository
+        User createdUser = userRepo.save(newUser);
+
+        // Find the user by email
+        User foundUser = userRepo.findByEmail(newUser.getEmail());
+        Assertions.assertThat(foundUser).isNotNull();
+    }
+
+    @Test
+    public void testFindANotExistingEmail() {
+        // Create a new user
+        User newUser = TestUtils.mockUser();
+
+        // Save the new user to the repository
+        User createdUser = userRepo.save(newUser);
+
+        // Find the user by email
+        User foundUser = userRepo.findByEmail(TestUtils.generateText(5) + "@gmail.com");
+        Assertions.assertThat(foundUser).isNull();
     }
 }
