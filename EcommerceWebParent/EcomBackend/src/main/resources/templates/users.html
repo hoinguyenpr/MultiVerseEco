@@ -7,6 +7,8 @@
     <title>Home - Multiverse Ecommerce Admin</title>
 
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/fontawesome/all.css}" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/style.css}" type="text/css"/>
     <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
     <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
 </head>
@@ -82,13 +84,18 @@
                 <tbody>
                     <tr th:each="user : ${listUsers}">
                         <td th:text="${user.id}"></td>
-                        <td><img th:src="@{${user.photos}}"/></td>
+                        <td><span class="fas fa-portrait fa-3x icon-silver"></span></td>
                         <td th:text="${user.firstName}"></td>
                         <td th:text="${user.lastName}"></td>
                         <td th:text="${user.roles}"></td>
-                        <td th:text="${user.enabled}"></td>
                         <td>
-                            Edit &nbsp; Delete
+                            <a th:if="${user.enabled == true}" class="fas fa-check-circle fa-2x icon-green" href=""></a>
+                            <a th:if="${user.enabled == false}" class="fas fa-check-circle fa-2x icon-dark" href=""></a>
+                        </td>
+                        <td>
+                            <a class="fas fa-user-edit fa-2x icon-green" href=""></a>
+                            &nbsp;
+                            <a class="fas fa-trash fa-2x icon-dark" href=""></a>
                         </td>
                     </tr>
                 </tbody>
