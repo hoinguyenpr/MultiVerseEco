@@ -94,7 +94,8 @@
 				</nav>
 			</div>
 			<div>
-				<h1>Manage Users | Create New User</h1>
+				<h1 th:if="${user.id == null}">Manage Users | Create New User</h1>
+				<h1 th:if="${user.id != null}">Manage Users | Update User</h1>
 			</div>
 			<form
 				th:action="@{/users/save}"
@@ -104,6 +105,7 @@
 				style="max-width: 700px; margin: 0 auto"
 				onsubmit="return checkEmailUnique(this)"
 			>
+				<input type="hidden" th:field="*{id}" />
 				<div class="border border-secondary rounded p-3">
 					<div class="form-group row mb-3">
 						<label class="col-sm-4 col-form-label">Email:</label>
@@ -148,10 +150,19 @@
 						<label class="col-sm-4 col-form-label">Password: </label>
 						<div class="col-sm-8">
 							<input
+								th:if="${user.id == null}"
 								type="password"
 								class="form-control"
 								th:field="*{password}"
 								required
+								minlength="3"
+								maxlength="20"
+							/>
+							<input
+								th:if="${user.id != null}"
+								type="password"
+								class="form-control"
+								th:field="*{password}"
 								minlength="3"
 								maxlength="20"
 							/>
@@ -247,8 +258,9 @@
 			function checkEmailUnique(form) {
 				url = "[[@{/api/users/is-duplicate-email}]]";
 				userEmail = $("#email").val();
+				userId = $("#id").val();
 				csrfToken = $("input[name='_csrf']").val();
-				params = { email: userEmail, _csrf: csrfToken };
+				params = { email: userEmail, id: userId, _csrf: csrfToken };
 
 				$.post(url, params, function (response) {
 					if (response == false) {

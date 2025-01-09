@@ -14,7 +14,7 @@ public class UserRestController {
 
     // http://localhost:8081/MultiverseAdmin/api/users/check-email?email=davidanchor@code.edu.az
     @PostMapping("/is-duplicate-email")
-    public boolean checkIsDuplicateEmail(@Param("email") String email) {
-        return !userService.isEmailUnique(email);
+    public boolean checkIsDuplicateEmail(@Param("id") Integer id, @Param("email") String email) {
+        return !userService.isEmailUnique(id, email);
     }
 }
