@@ -23,13 +23,13 @@ public class UserServiceTest {
     public void testIsExistingEmail() {
         String email = TestUtils.generateText(5) + "@gmail.com";
         when(userRepository.findByEmail(email)).thenReturn(TestUtils.mockUser());
-        assertFalse(userService.isEmailUnique(email));
+        assertFalse(userService.isEmailUnique(null, email));
     }
 
     @Test
     public void testIsNotExistingEmail() {
         String email = TestUtils.generateText(5) + "@gmail.com";
         when(userRepository.findByEmail(email)).thenReturn(null);
-        assertTrue(userService.isEmailUnique(email));
+        assertTrue(userService.isEmailUnique(null, email));
     }
 }

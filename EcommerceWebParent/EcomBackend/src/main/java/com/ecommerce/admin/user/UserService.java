@@ -8,6 +8,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 
 @Service
 public class UserService {
@@ -24,8 +26,22 @@ public class UserService {
         return (List<User>) userRepo.findAll();
     }
 
-    public void save(User user) {
-        encodePassword(user);
+    public void save(User user) throws UserNotFoundException {
+        boolean isUpdatingUser = user.getId() != null;
+        if (isUpdatingUser) {
+            try {
+                User existingUser = userRepo.findById(user.getId()).get();
+                if (user.getPassword().isEmpty()) {
+                    user.setPassword(existingUser.getPassword());
+                } else {
+                    encodePassword(user);
+                }
+            } catch (NoSuchElementException ex) {
+                throw new UserNotFoundException("Could not find any user with ID: " + user.getId());
+            }
+        } else {
+            encodePassword(user);
+        }
         userRepo.save(user);
     }
 
@@ -37,8 +53,19 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
     }
 
-    public boolean isEmailUnique(String email) {
-        User user = userRepo.findByEmail(email);
-        return user == null;
+    public boolean isEmailUnique(Integer id, String email) {
+        User userByEmail = userRepo.findByEmail(email);
+        if (userByEmail == null) return true;
+        boolean isCreatingNew = Objects.isNull(id);
+        if (isCreatingNew) return false;
+        return Objects.equals(userByEmail.getId(), id);
+    }
+
+    public User  get(Integer id) throws UserNotFoundException {
+        try {
+            return userRepo.findById(id).get();
+        } catch (NoSuchElementException ex) {
+            throw new UserNotFoundException("Could not find any user with ID: " + id);
+        }
     }
 }
