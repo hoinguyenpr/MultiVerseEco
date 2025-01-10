@@ -61,10 +61,20 @@ public class UserService {
         return Objects.equals(userByEmail.getId(), id);
     }
 
-    public User  get(Integer id) throws UserNotFoundException {
+    public User get(Integer id) throws UserNotFoundException {
         try {
             return userRepo.findById(id).get();
         } catch (NoSuchElementException ex) {
+            throw new UserNotFoundException("Could not find any user with ID: " + id);
+        }
+    }
+
+    public boolean delete(Integer id) throws UserNotFoundException {
+        long userCount = userRepo.countById(id);
+        if (userCount > 0) {
+            userRepo.deleteById(id);
+            return true;
+        } else {
             throw new UserNotFoundException("Could not find any user with ID: " + id);
         }
     }
